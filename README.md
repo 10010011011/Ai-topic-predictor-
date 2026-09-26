@@ -1,32 +1,45 @@
 # Topic Forecasting Workbench
 
-A browser-first, configurable forecasting workbench for extracting structured question data from PDF collections, applying year/shift weighting, fitting a forecasting model, and generating readable topic forecasts.
+A browser-first, configurable forecasting workbench for turning collections of question-paper PDFs into structured records, applying editable historical weights, fitting a forecasting model, and producing readable topic forecasts.
 
-## Pipeline
+## User flow
 
-1. Input PDF files.
-2. Sort and normalize the extracted data into structured records with year, date, shift, subject, chapter/topic fields, and provenance.
-3. Review or edit manual year/shift weights. A configurable historical-weight preset is supplied as the default; all weights remain editable.
-4. Train/refit the forecasting model.
-5. Use the trained model to generate forecasts.
+**Input → Sorting → Config → Training → Use**
 
-The system is designed so the same pipeline can be adapted to different examinations or question-paper collections by replacing the taxonomy and default weighting configuration.
+### Input
+Upload one or many PDF papers. Original sources stay separate from normalized records.
 
-## Planned interfaces
+### Sorting
+Extract and normalize question-level records with year, date, shift, subject and topic metadata. Cleaning and deduplication happen before model fitting.
 
-- **Input**: PDF upload, extraction, segmentation, metadata detection, deduplication.
-- **Config**: taxonomy, year/shift weights, recency settings, forecast horizon, model controls.
-- **Training**: corpus validation, fit/refit, calibration, evaluation, model versioning.
-- **Use**: target date/shift selection and user-readable forecast output.
+### Config
+Adjust historical weights manually. A recent-data-heavy preset is supplied as the default configuration, but every year can be edited and additional years can be added later.
 
-## Data principles
+### Training
+Fit/refit on the complete accumulated corpus using the current configuration. New years, missing shifts, or extra paper sets can be appended later and the model can be refit without throwing away older data.
 
-- Original PDFs remain separate from normalized records.
-- New years or missing shifts can be appended later.
-- Retraining/refitting uses the accumulated corpus rather than only the newest upload.
-- Configuration is explicit and versioned so historical experiments remain reproducible.
-- No external AI endpoint is required for the forecasting engine.
+### Use
+Select a target date/shift and generate a user-readable forecast.
 
-## Current status
+## Design goal
 
-This repository is an initial shell. The full browser application and local extraction/forecasting implementation will be added in follow-up commits.
+The forecasting layer is intentionally separate from examination-specific taxonomy and metadata rules, so the same workbench can be adapted to different exam or question-paper collections.
+
+## Project structure
+
+```
+app/
+  index.html
+  app.js
+  styles.css
+config/
+  default-weights.json
+docs/
+  ARCHITECTURE.md
+```
+
+## Status
+
+The repository currently contains the privacy-neutral browser workbench shell and configuration flow. The next implementation step is wiring the full PDF extraction, structured sorting, persistent corpus, calibration, forecasting engine, and evaluation pipeline into the tabs above.
+
+No external AI endpoint is required by the forecasting engine.
